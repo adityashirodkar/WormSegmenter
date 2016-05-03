@@ -59,6 +59,13 @@ static int parse_opt (int key, char *arg, struct argp_state *state) {
             cla.project = arg;
             break;
 
+        case ARGP_KEY_END:
+            if (state->arg_num < 1){
+                cout << "Too few arguments!" << endl;
+                argp_usage(state);
+            }
+            break;
+
         case 'i':
             cla.input = arg;
             break;
@@ -117,13 +124,6 @@ static int parse_opt (int key, char *arg, struct argp_state *state) {
 
         case 'v':
             cla.verbose = true;             //Needs correction.
-            break;
-
-        case ARGP_KEY_END:
-            if (state->arg_num < 1){
-                cout << "Too few arguments!" << endl;
-                argp_usage(state);
-            }
             break;
 
         default:
