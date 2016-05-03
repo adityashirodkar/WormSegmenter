@@ -16,7 +16,7 @@ using namespace cv;
 
 
 struct Arguments {
-    string project
+    string project;
     string input;
     string output;
     int padding;
