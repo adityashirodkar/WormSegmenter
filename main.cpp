@@ -16,17 +16,38 @@ using namespace cv;
 
 
 struct Arguments {
+    string project
     string input;
     string output;
+    int padding;
     int frames;
     string extension;
+    int width;
+    int height;
+    int area_min;
+    int area_max;
+    int search_win_size;
+    int blur_radius;
+    int threshold_win_size;
+    float threshold_ratio;
+    string log;
     bool verbose;
 
     Arguments():    input("data/"),
                     output("output.txt"),
+                    padding(7),
                     frames(1000),
                     extension(".jpg"),
-                    verbose(false) {}
+                    width(640),
+                    height(480),
+                    area_min(200),
+                    area_max(400),
+                    search_win_size(100),
+                    blur_radius(3),
+                    threshold_win_size(25),
+                    threshold_ratio(0.9),
+                    log("wormSeg.log"),
+                    verbose(true) {}
 } cla;
 
 
@@ -35,11 +56,19 @@ int findCentroidFromImage(Mat, int*, int*, int*);
 static int parse_opt (int key, char *arg, struct argp_state *state) {
     switch(key) {
         case 'P':
+            cla.project = arg;
+            break;
+
+        case 'i':
             cla.input = arg;
             break;
 
         case 'o':
             cla.output = arg;
+            break;
+
+        case 'p':
+            cla.padding = atoi(arg);
             break;
 
         case 'f':
@@ -50,18 +79,55 @@ static int parse_opt (int key, char *arg, struct argp_state *state) {
             cla.extension = arg;
             break;
 
-        case 'v':
-            cla.verbose = 1;
+        case 'w':
+            cla.width = atoi(arg);
             break;
-//        case ARGP_KEY_END:
-//            if (state->arg_num < 1){
-//                cout << "Too few arguments!" << endl;
-//                argp_usage(state);
-//            }
-//            break;
-//
-//        default:
-//            return ARGP_ERR_UNKNOWN;
+
+        case 'h':
+            cla.height = atoi(arg);
+            break;
+
+        case 'a':
+            cla.area_min = atoi(arg);
+            break;
+
+        case 'A':
+            cla.area_max = atoi(arg);
+            break;
+
+        case 's':
+            cla.search_win_size = atoi(arg);
+            break;
+
+        case 'b':
+            cla.blur_radius = atoi(arg);
+            break;
+
+        case 't':
+            cla.threshold_win_size = atoi(arg);
+            break;
+
+        case 'T':
+            cla.threshold_ratio = atof(arg);
+            break;
+
+        case 'l':
+            cla.log = arg;
+            break;
+
+        case 'v':
+            cla.verbose = true;             //Needs correction.
+            break;
+
+        case ARGP_KEY_END:
+            if (state->arg_num < 1){
+                cout << "Too few arguments!" << endl;
+                argp_usage(state);
+            }
+            break;
+
+        default:
+            return ARGP_ERR_UNKNOWN;
     }
 
     return 0;
