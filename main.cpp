@@ -59,12 +59,12 @@ static int parse_opt (int key, char *arg, struct argp_state *state) {
             cla.project = arg;
             break;
 
-        case ARGP_KEY_END:
-            if (state->arg_num < 1){
-                cout << "Too few arguments!" << endl;
-                argp_usage(state);
-            }
-            break;
+//        case ARGP_KEY_END:
+//            if (state->arg_num < 1){
+//                cout << "Too few arguments!" << endl;
+//                argp_usage(state);
+//            }
+//            break;
 
         case 'i':
             cla.input = arg;
@@ -266,10 +266,10 @@ int main(int argc, char **argv) {
         {"height",                'h', "HEIGHT",     OPTION_ARG_OPTIONAL,  "The vertical resolution of the image."},
         {"area_min",              'a', "NUMBER",     OPTION_ARG_OPTIONAL,  "The lower bound for a candidate worm component."},
         {"area_max",              'A', "NUMBER",     OPTION_ARG_OPTIONAL,  "The upper bound for a candidate worm component."},
-        {"search_win_size",       's', "NUMBER",     OPTION_ARG_OPTIONAL,  "Path to input images."},
-        {"blur_radius",           'b', "NUMBER",     OPTION_ARG_OPTIONAL,  "Path to input images."},
-        {"threshold_win_size",    't', "NUMBER",     OPTION_ARG_OPTIONAL,  "Path to input images."},
-        {"threshold_ratio",       'T', "FLOAT",      OPTION_ARG_OPTIONAL,  "Path to input images."},
+        {"search_win_size",       's', "NUMBER",     OPTION_ARG_OPTIONAL,  "Width and height of crop area."},
+        {"blur_radius",           'b', "NUMBER",     OPTION_ARG_OPTIONAL,  "Width and height of the sliding window used in the box blur."},
+        {"threshold_win_size",    't', "NUMBER",     OPTION_ARG_OPTIONAL,  "Width and height of the sliding window used in the dynamic threshold."},
+        {"threshold_ratio",       'T', "FLOAT",      OPTION_ARG_OPTIONAL,  "Pixel intensity."},
         {"log",                   'l', "FILE PATH",  OPTION_ARG_OPTIONAL,  "Path to log file."},
         {"verbose",               'v', "BOOLEAN",    OPTION_ARG_OPTIONAL,  "Produce verbose output."},
         { 0 }
