@@ -1,3 +1,5 @@
 .DS_Store
 output.txt
 main
+Makefile
+main.o

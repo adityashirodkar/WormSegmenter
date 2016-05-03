@@ -59,12 +59,12 @@ static int parse_opt (int key, char *arg, struct argp_state *state) {
             cla.project = arg;
             break;
 
-//        case ARGP_KEY_END:
-//            if (state->arg_num < 1){
-//                cout << "Too few arguments!" << endl;
-//                argp_usage(state);
-//            }
-//            break;
+        case ARGP_KEY_END:
+            if (state->arg_num < 1){
+                cout << "Too few arguments!" << endl;
+                argp_usage(state);
+            }
+            break;
 
         case 'i':
             cla.input = arg;
@@ -137,6 +137,7 @@ static int parse_opt (int key, char *arg, struct argp_state *state) {
 template <typename T> string NumberToString(T pNumber) {
     ostringstream oOStrStream;
     oOStrStream << pNumber;
+
     return oOStrStream.str();
 }
 
@@ -148,21 +149,20 @@ string intToFileName(string fileNameFormat, int fileNumber) {
 }
 
 
-int wormSegmenter(string input, string output, int frames, string extension, bool verbose) {
+int wormSegmenter() {
 
     fstream outputFile;
 
-    outputFile.open(output.c_str(), ios::out);
+    outputFile.open(cla.output.c_str(), ios::out);
 
     int x = -1, y = -1, area = -1;
-    int width = 100, height = 100;
     int adjustX = 0, adjustY = 0;
 
     // Iterate over all the images.
-    for (int fileNumber = 0; fileNumber < frames; fileNumber ++) {
+    for (int fileNumber = 0; fileNumber < cla.frames; fileNumber ++) {
 
         // File name of each file including the path.
-        string fileName = input + intToFileName("0000000", fileNumber) + extension;
+        string fileName = cla.input + intToFileName("0000000", fileNumber) + cla.extension;
 
         // Read and convert the image into gray scale and copy into the matrix.
         Mat src = imread(fileName, CV_LOAD_IMAGE_GRAYSCALE);
@@ -176,19 +176,19 @@ int wormSegmenter(string input, string output, int frames, string extension, boo
         if((x == -1) && (y == -1)) {
             findCentroidFromImage(src, &x, &y, &area);
             src = imread(fileName, CV_LOAD_IMAGE_GRAYSCALE);
-            adjustX = x - (width / 2);
-            adjustY = y - (height / 2);
+            adjustX = x - (cla.search_win_size / 2);
+            adjustY = y - (cla.search_win_size / 2);
         }
         else {
-            src = src(Rect(x - (width / 2), y - (height / 2), width, height));
+            src = src(Rect(x - (cla.search_win_size / 2), y - (cla.search_win_size / 2), cla.search_win_size, cla.search_win_size));
 
             findCentroidFromImage(src, &x, &y, &area);
 
             if((x > 0) && (y > 0)) {
                 x += adjustX;
                 y += adjustY;
-                adjustX = x - (width / 2);
-                adjustY = y - (height / 2);
+                adjustX = x - (cla.search_win_size / 2);
+                adjustY = y - (cla.search_win_size / 2);
             }
         }
 
@@ -204,10 +204,10 @@ int wormSegmenter(string input, string output, int frames, string extension, boo
 
 int findCentroidFromImage(Mat src, int *pX, int *pY, int *pArea) {
     // Smoothing the image.
-    blur(src, src, Size(5, 5));     //Blur radius 3 in original java worm segmenter.
+    blur(src, src, Size(cla.blur_radius, cla.blur_radius));     //Blur radius 3 in original java worm segmenter.
 
     // Convert the image into binary image.
-    threshold(src, src, 200, 255, THRESH_BINARY_INV);
+    threshold(src, src, int(cla.threshold_ratio * 255), 255, THRESH_BINARY_INV);
 
     // Vector for storing contour
     vector<vector <Point> > contours;
@@ -279,7 +279,7 @@ int main(int argc, char **argv) {
 
     argp_parse (&argp, argc, argv, 0, 0, 0);
 
-    wormSegmenter(cla.input, cla.output, cla.frames, cla.extension, cla.verbose);
+    wormSegmenter();
 
     return 0;
 }
