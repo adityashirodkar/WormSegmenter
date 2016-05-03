@@ -21,8 +21,8 @@ struct Arguments {
     int frames;
     string extension;
     bool verbose;
-    
-    Arguments():    input("data/640_480/"),
+
+    Arguments():    input("data/"),
                     output("output.txt"),
                     frames(1000),
                     extension(".jpg"),
@@ -77,7 +77,7 @@ int wormSegmenter(string input, string output, int frames, string extension, boo
 
     fstream outputFile;
     
-    outputFile.open(output, ios::out);
+    outputFile.open(output.c_str(), ios::out);
     
     int x = -1, y = -1, area = -1;
     int width = 100, height = 100;
